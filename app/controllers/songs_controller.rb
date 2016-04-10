@@ -30,6 +30,7 @@ class SongsController < ApplicationController
     else
       @song = Song.new(artist_id: params[:artist_id])
     end
+    @nested = !!params[:artist_id]
   end
 
   def create
@@ -43,6 +44,7 @@ class SongsController < ApplicationController
   end
 
   def edit
+    @nested = false
     if params[:artist_id]
       #if 'artist_id' is present, try to find artist...
       artist = Artist.find_by(id: params[:artist_id])
@@ -57,10 +59,12 @@ class SongsController < ApplicationController
           redirect_to artist_songs_path(artist), alert: "Song not found."
         end
         #...by this point, artist and song have been found
+        @nested = true
       end
     else
       #this is for the normal '/songs/:id' route
       @song = Song.find(params[:id])
+      @nested = false
     end
   end
 
